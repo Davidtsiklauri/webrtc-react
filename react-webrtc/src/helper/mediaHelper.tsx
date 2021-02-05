@@ -1,4 +1,4 @@
-export class MediaHelper {
+class MediaHelper {
   public async getUserMedia(): Promise<MediaStream> {
     // , audio: true
     try {
