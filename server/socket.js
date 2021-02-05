@@ -1,23 +1,24 @@
 class Socket {
-    /**
-     * @private
-    */
-    socket = null;
-    constructor(socket) {
-        this.socket = socket;
-        this.initSocket();
-    }
+  /**
+   * @private
+   */
+  socket = null;
+  constructor(socket) {
+    this.socket = socket;
+  }
 
-    /**
-     * @private
-     */
-    initSocket() {
-        if(this.socket) {
-            this.socket.on(('connection'), (sock) => {
-               sock.emit('test', 'test')
-            })
-        }
-    }
+  getSocket(cb) {
+    this.socket.on('connection', (sock) => {
+      sock.on('signal', (data) => {
+        console.log(sock.handshake.query);
+        cb(data, sock);
+      });
+    });
+  }
+
+  emitSocketData(event, data, socket) {
+    socket.broadcast.emit(event, data);
+  }
 }
 
 module.exports = Socket;

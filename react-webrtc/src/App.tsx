@@ -1,16 +1,30 @@
 import React, { createRef } from 'react';
 import { Video } from './components/Video';
 import { userMedia, SocketHelper } from './helper/index';
+import { RtcpHelper } from './helper/rtcpHelper';
+//@ts-ignore
+// fuck react -> robi aslanian
+import uuid from 'react-uuid';
+
+const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+type emit = 'signal';
+const id = uuid();
 
 function App() {
-  const socket = new SocketHelper();
+  const socket = new SocketHelper(id);
+  const rtcpHelper = new RtcpHelper(config);
+
   const videoRef = createRef() as React.RefObject<HTMLVideoElement>;
   (async () => {
-    const stream: MediaStream = await userMedia.getUserMedia();
-    if (videoRef.current) {
-      const { current } = videoRef;
-      current.srcObject = stream;
-      current.play();
+    try {
+      const stream: MediaStream = await userMedia.getUserMedia();
+      if (videoRef.current) {
+        const { current } = videoRef;
+        current.srcObject = stream;
+        current.play();
+      }
+    } catch (e) {
+      console.log(e);
     }
   })();
 
@@ -21,21 +35,12 @@ function App() {
   // signalingChannel.send('Hello!');
 
   const makeCall = async () => {
-    console.log('in Make Call');
-
-    const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-    const peerConnection = new RTCPeerConnection(configuration);
-    // signalingChannel.addEventListener('message', async message => {
-    //     if (message.answer) {
-    //         const remoteDesc = new RTCSessionDescription(message.answer);
-    //         await peerConnection.setRemoteDescription(remoteDesc);
-    //     }
-    // });
-    const offer = await peerConnection.createOffer();
-    console.log(offer);
-
-    await peerConnection.setLocalDescription(offer);
-    // signalingChannel.send({'offer': offer});
+    socket.messageListener((data: RTCSessionDescriptionInit) => {
+      rtcpHelper.setDescription(data);
+      console.log(data);
+    });
+    const offer = await rtcpHelper.setLocalDescription();
+    socket.emit<emit>('signal', offer);
   };
 
   return (

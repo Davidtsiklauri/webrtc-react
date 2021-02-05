@@ -1,23 +1,24 @@
 import { io, Socket } from 'socket.io-client';
 
 export class SocketHelper {
-  private socket: Socket | null = null;
+  private socket: Socket;
 
-  constructor() {
+  constructor(id: string) {
     this.socket = io('localhost:5000', {
       transports: ['websocket'],
+      query: {
+        id: id,
+      },
     });
-    this.initSocket();
   }
 
-  private initSocket() {
+  messageListener(cb: (data: RTCSessionDescriptionInit) => void) {
+    this.socket.on('message', cb);
+  }
+
+  emit<T extends string>(type: T, data: any): void {
     if (this.socket) {
-      this.socket.on('connection', (sock: any) => {
-        console.log('connected');
-      });
-      this.socket.on('gia', (data: any) => {
-        console.log(data);
-      });
+      this.socket.emit(type, data);
     }
   }
 }
