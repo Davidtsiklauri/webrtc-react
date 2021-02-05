@@ -1,7 +1,8 @@
 export class MediaHelper {
   public async getUserMedia(): Promise<MediaStream> {
+    // , audio: true
     try {
-      const constraints = { video: true, audio: true };
+      const constraints = { video: true };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       return stream;
     } catch (error) {
