@@ -9,14 +9,17 @@ class Socket {
 
   getSocket(cb) {
     this.socket.on('connection', (sock) => {
-      sock.on('signal', (data) => {
-        cb(data, sock, sock.handshake.query);
+      sock.on('answer', (data) => {
+        cb(data, sock, sock.handshake.query, 'answer');
+      });
+      sock.on('offer', (data) => {
+        cb(data, sock, sock.handshake.query, 'offer');
       });
     });
   }
 
   emitSocketData(event, data, socket, id) {
-    socket.broadcast.except(socket.id).emit(event, data);
+    socket.emit(event, { offer: data, id });
   }
 }
 

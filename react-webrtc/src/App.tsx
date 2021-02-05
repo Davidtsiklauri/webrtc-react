@@ -29,15 +29,16 @@ function App() {
   })();
 
   socket.messageListener<event>(async (data: RTCSessionDescriptionInit) => {
-    await rtcpHelper.setDescription(data);
-    const answer = await rtcpHelper.createAnswer();
-    await rtcpHelper.createLocalDescription(answer);
-    socket.emit<event>('answer', answer);
+    console.log(data, id);
+    // await rtcpHelper.setDescription(data);
+    // const answer = await rtcpHelper.createAnswer();
+    // await rtcpHelper.createLocalDescription(answer);
+    // socket.emit<event>('answer', answer);
   }, 'offer');
 
   const makeCall = async () => {
     socket.messageListener<event>((data: RTCSessionDescriptionInit) => {
-      rtcpHelper.setDescription(data);
+      // rtcpHelper.setDescription(data);
     }, 'answer');
     const offer = await rtcpHelper.setLocalDescription();
     socket.emit<event>('offer', offer);
