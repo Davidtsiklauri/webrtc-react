@@ -15,4 +15,12 @@ export class RtcpHelper {
     await this.peerConnection.setLocalDescription(offer);
     return offer;
   }
+
+  async createAnswer(): Promise<RTCSessionDescriptionInit> {
+    return await this.peerConnection.createAnswer();
+  }
+
+  async createLocalDescription(description: RTCSessionDescriptionInit): Promise<void> {
+    return await this.peerConnection.setLocalDescription(description);
+  }
 }

@@ -7,7 +7,7 @@ import { RtcpHelper } from './helper/rtcpHelper';
 import uuid from 'react-uuid';
 
 const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-type emit = 'signal';
+type event = 'offer' | 'answer';
 const id = uuid();
 
 function App() {
@@ -28,19 +28,19 @@ function App() {
     }
   })();
 
-  // const signalingChannel = new SignalingChannel(remoteClientId);
-  // signalingChannel.addEventListener('message', message => {
-  // });
-
-  // signalingChannel.send('Hello!');
+  socket.messageListener<event>(async (data: RTCSessionDescriptionInit) => {
+    await rtcpHelper.setDescription(data);
+    const answer = await rtcpHelper.createAnswer();
+    await rtcpHelper.createLocalDescription(answer);
+    socket.emit<event>('answer', answer);
+  }, 'offer');
 
   const makeCall = async () => {
-    socket.messageListener((data: RTCSessionDescriptionInit) => {
+    socket.messageListener<event>((data: RTCSessionDescriptionInit) => {
       rtcpHelper.setDescription(data);
-      console.log(data);
-    });
+    }, 'answer');
     const offer = await rtcpHelper.setLocalDescription();
-    socket.emit<emit>('signal', offer);
+    socket.emit<event>('offer', offer);
   };
 
   return (

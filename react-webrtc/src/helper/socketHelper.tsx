@@ -7,13 +7,13 @@ export class SocketHelper {
     this.socket = io('localhost:5000', {
       transports: ['websocket'],
       query: {
-        id: id,
+        id,
       },
     });
   }
 
-  messageListener(cb: (data: RTCSessionDescriptionInit) => void) {
-    this.socket.on('message', cb);
+  messageListener<T extends string>(cb: (data: RTCSessionDescriptionInit) => void, event: T) {
+    this.socket.on(event, cb);
   }
 
   emit<T extends string>(type: T, data: any): void {

@@ -10,14 +10,13 @@ class Socket {
   getSocket(cb) {
     this.socket.on('connection', (sock) => {
       sock.on('signal', (data) => {
-        console.log(sock.handshake.query);
-        cb(data, sock);
+        cb(data, sock, sock.handshake.query);
       });
     });
   }
 
-  emitSocketData(event, data, socket) {
-    socket.broadcast.emit(event, data);
+  emitSocketData(event, data, socket, id) {
+    socket.broadcast.except(socket.id).emit(event, data);
   }
 }
 
