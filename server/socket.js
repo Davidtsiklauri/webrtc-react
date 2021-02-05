@@ -12,10 +12,9 @@ class Socket {
      * @private
      */
     initSocket() {
-        console.log(this.socket);
         if(this.socket) {
             this.socket.on(('connection'), (sock) => {
-                console.log(sock);
+               sock.emit('test', 'test')
             })
         }
     }

@@ -1,10 +1,12 @@
 const http = require('http'),
-     io = require('socket.io')(4000),
+     io = require('socket.io')(),
      Socket = require('./socket');
 
-let app = http.createServer((req, res) => {
-    const socketInstance = new Socket(io);
-    
-});
+let app = http.createServer();
+io.attach(app);
 
-app.listen(4000, '127.0.0.1');
+const socketInstance = new Socket(io);
+
+app.listen(5000, () => {
+    console.log('init')
+}); 

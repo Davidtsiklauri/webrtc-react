@@ -1,17 +1,23 @@
-export class SocketHelper {
-  private socket: any = null;
+import { io, Socket } from 'socket.io-client';
 
-  constructor(socket: any) {
-    this.socket = socket;
+export class SocketHelper {
+  private socket: Socket | null = null;
+
+  constructor() {
+    this.socket = io('localhost:5000', {
+      transports: ['websocket'],
+    });
     this.initSocket();
   }
 
   private initSocket() {
-    console.log(this.socket);
     if (this.socket) {
-      //   this.socket.on('connection', (sock: any) => {
-      //     console.log(sock);
-      //   });
+      this.socket.on('connection', (sock: any) => {
+        console.log('connected');
+      });
+      this.socket.on('gia', (data: any) => {
+        console.log(data);
+      });
     }
   }
 }

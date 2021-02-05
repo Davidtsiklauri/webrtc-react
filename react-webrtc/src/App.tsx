@@ -1,10 +1,9 @@
 import React, { createRef } from 'react';
 import { Video } from './components/Video';
 import { userMedia, SocketHelper } from './helper/index';
-import { io } from 'socket.io-client';
 
 function App() {
-  const socket = new SocketHelper(io);
+  const socket = new SocketHelper();
   const videoRef = createRef() as React.RefObject<HTMLVideoElement>;
   (async () => {
     const stream: MediaStream = await userMedia.getUserMedia();
