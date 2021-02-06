@@ -5,6 +5,8 @@ export interface IData {
   id: string;
 }
 
+export type EVENT = 'offer' | 'answer';
+
 export class SocketHelper {
   private socket: Socket;
 
@@ -19,6 +21,7 @@ export class SocketHelper {
 
   messageListener<T extends string>(cb: (data: any) => void, event: T) {
     this.socket.on(event, cb);
+    console.log(this.socket.listeners('offer'));
   }
 
   emit<T extends string>(type: T, data: any): void {
