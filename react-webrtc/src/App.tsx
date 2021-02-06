@@ -22,6 +22,14 @@ function App() {
   const [offer, setOffer] = useState({});
 
   useEffect(() => {
+    rtcpHelper.addEventListener('icecandidate', (ev: RTCPeerConnectionIceEvent) => {
+      console.log(ev);
+    });
+
+    rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
+      console.log(ev);
+    });
+
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
       setVisibility(true);
       setOffer(offer);
@@ -47,6 +55,7 @@ function App() {
 
   const makeCall = async () => {
     const offer = await rtcpHelper.setLocalDescription();
+
     socket.emit<EVENT>('offer', offer);
   };
 

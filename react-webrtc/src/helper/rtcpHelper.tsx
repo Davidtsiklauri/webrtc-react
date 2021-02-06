@@ -23,4 +23,8 @@ export class RtcpHelper {
   async createLocalDescription(description: RTCSessionDescriptionInit): Promise<void> {
     return await this.peerConnection.setLocalDescription(description);
   }
+
+  addEventListener(type: keyof RTCPeerConnectionEventMap, cb: (ev: any) => void) {
+    return this.peerConnection.addEventListener(type, cb);
+  }
 }
