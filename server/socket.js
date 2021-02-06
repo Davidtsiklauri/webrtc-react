@@ -19,7 +19,7 @@ class Socket {
   }
 
   emitSocketData(event, data, socket, id) {
-    socket.emit(event, { offer: data, id });
+    socket.broadcast.emit(event, { [event]: data, id });
   }
 }
 

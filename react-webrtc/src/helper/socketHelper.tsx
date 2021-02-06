@@ -1,5 +1,10 @@
 import { io, Socket } from 'socket.io-client';
 
+export interface IData {
+  [key: number]: RTCSessionDescriptionInit;
+  id: string;
+}
+
 export class SocketHelper {
   private socket: Socket;
 
@@ -12,7 +17,7 @@ export class SocketHelper {
     });
   }
 
-  messageListener<T extends string>(cb: (data: RTCSessionDescriptionInit) => void, event: T) {
+  messageListener<T extends string>(cb: (data: any) => void, event: T) {
     this.socket.on(event, cb);
   }
 
