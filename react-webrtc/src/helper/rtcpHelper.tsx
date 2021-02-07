@@ -1,5 +1,8 @@
 export class RtcpHelper {
-  private peerConnection: RTCPeerConnection;
+  /**
+   * @temorary
+   */
+  peerConnection: RTCPeerConnection;
   constructor(configuration: RTCConfiguration) {
     this.peerConnection = new RTCPeerConnection(configuration);
   }

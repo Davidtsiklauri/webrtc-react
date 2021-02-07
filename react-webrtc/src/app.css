@@ -1,0 +1,27 @@
+.d-flex {
+  display: flex;
+  flex-basis: 50%;
+}
+
+video {
+  flex: 1 1 0;
+  width: 0 !important;
+}
+
+.border-2 {
+  border: 2px solid slategray;
+}
+
+.border-2 video:nth-child(1) {
+  border-right: 1px solid red !important;
+}
+
+.second-border video:nth-child(2) {
+  border-left: 1px;
+  height: 300px;
+}
+
+button {
+  margin-top: 10px !important;
+  margin-left: 5px !important;
+}

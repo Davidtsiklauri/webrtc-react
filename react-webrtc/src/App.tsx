@@ -1,9 +1,12 @@
 import React, { createRef, useEffect, useState } from 'react';
+import { Button } from 'antd';
 
 import { Video } from './components/Video';
 
 import { CONFIG } from './config/config';
 import { EVENT } from './helper/socketHelper';
+
+import './app.css';
 
 import { userMedia, SocketHelper } from './helper/index';
 import { RtcpHelper } from './helper/rtcpHelper';
@@ -17,6 +20,7 @@ const rtcpHelper = new RtcpHelper(CONFIG),
   socket = new SocketHelper(id);
 
 function App() {
+  const callVideoRef = createRef() as React.RefObject<HTMLVideoElement>;
   const videoRef = createRef() as React.RefObject<HTMLVideoElement>;
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
@@ -42,8 +46,8 @@ function App() {
     (async () => {
       try {
         const stream: MediaStream = await userMedia.getUserMedia();
-        if (videoRef.current) {
-          const { current } = videoRef;
+        if (callVideoRef.current) {
+          const { current } = callVideoRef;
           current.srcObject = stream;
           current.play();
         }
@@ -71,12 +75,18 @@ function App() {
 
   return (
     <>
-      <Video ref={videoRef} />
-      <button onClick={makeCall}>Make A Call</button>
+      <div className="d-flex border-2 second-border">
+        <Video ref={callVideoRef} />
+        <Video ref={videoRef} />
+      </div>
+      <Button onClick={makeCall} type="primary">
+        Make A Call
+      </Button>
       <ModalWrapper
         isVisible={isVisible}
         onConfrim={() => onModalClose(false)}
         onCancel={() => onModalClose(true)}
+        Component={<p>Answer Call:</p>}
       ></ModalWrapper>
     </>
   );
