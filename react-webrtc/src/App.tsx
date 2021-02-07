@@ -17,11 +17,11 @@ import { ModalWrapper } from './components/Modal';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
-  socket = new SocketHelper(id);
+  socket = new SocketHelper(id),
+  videoRef = createRef() as React.RefObject<HTMLVideoElement>,
+  callVideoRef = createRef() as React.RefObject<HTMLVideoElement>;
 
 function App() {
-  const callVideoRef = createRef() as React.RefObject<HTMLVideoElement>;
-  const videoRef = createRef() as React.RefObject<HTMLVideoElement>;
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
 
@@ -31,7 +31,7 @@ function App() {
     });
 
     rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
-      console.log(ev);
+      // console.log(ev);
     });
 
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
@@ -43,13 +43,21 @@ function App() {
       rtcpHelper.setDescription(answer);
     }, 'answer');
 
+    rtcpHelper.peerConnection.ontrack = ({ streams: [stream] }) => {
+      if (videoRef.current) {
+        const { current } = videoRef;
+        current.srcObject = stream;
+        console.log(stream.getTracks());
+      }
+    };
+
     (async () => {
       try {
         const stream: MediaStream = await userMedia.getUserMedia();
         if (callVideoRef.current) {
           const { current } = callVideoRef;
           current.srcObject = stream;
-          current.play();
+          stream.getTracks().forEach((track) => rtcpHelper.peerConnection.addTrack(track, stream));
         }
       } catch (e) {
         console.log(e);
@@ -59,7 +67,6 @@ function App() {
 
   const makeCall = async () => {
     const offer = await rtcpHelper.setLocalDescription();
-
     socket.emit<EVENT>('offer', offer);
   };
 
