@@ -27,26 +27,16 @@ function App() {
   const [isCallHangup, setCallHangup] = useState(true);
 
   useEffect(() => {
-    rtcpHelper.addEventListener('icecandidate', (ev: RTCPeerConnectionIceEvent) => {
-      console.log(ev.candidate);
-      if (ev.candidate) {
-        rtcpHelper.peerConnection
-          .addIceCandidate(ev.candidate)
-          .then(console.log)
-          .catch(console.log);
-      }
-    });
-
     rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
-      // console.log(ev);
       setCallHangup(false);
     });
 
-    rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
-      console.log('PEERS CONNECTEd');
-    });
+    rtcpHelper.peerConnection.oniceconnectionstatechange = () =>
+      console.log(rtcpHelper.peerConnection.iceConnectionState);
 
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
+      console.log('offer', offer);
+
       setVisibility(true);
       setOffer(offer);
     }, 'offer');
@@ -68,6 +58,7 @@ function App() {
         if (callVideoRef.current) {
           const { current } = callVideoRef;
           current.srcObject = stream;
+
           stream.getTracks().forEach((track) => rtcpHelper.peerConnection.addTrack(track, stream));
         }
       } catch (e) {
@@ -77,8 +68,15 @@ function App() {
   }, []);
 
   const makeCall = async () => {
-    const offer = await rtcpHelper.setLocalDescription();
-    socket.emit<EVENT>('offer', offer);
+    /**
+     * @Temporary
+     * video doesnot open on first setLocalDescription
+     */
+    await rtcpHelper.setLocalDescription();
+    setTimeout(async () => {
+      const offer = await rtcpHelper.setLocalDescription();
+      socket.emit<EVENT>('offer', offer);
+    }, 0);
   };
 
   const closeCall = () => {
@@ -103,7 +101,7 @@ function App() {
         <Video ref={videoRef} />
       </div>
       {(isCallHangup && (
-        <Button onClick={makeCall} type="primary">
+        <Button onClick={() => makeCall()} type="primary">
           Make A Call
         </Button>
       )) || (
