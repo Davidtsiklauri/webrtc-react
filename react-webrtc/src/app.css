@@ -1,13 +1,10 @@
 .d-flex {
   display: flex;
-  flex-basis: 50%;
 }
-
 video {
-  flex: 1 1 0;
-  width: 0 !important;
+  object-fit: cover;
+  width: 100%;
 }
-
 .border-2 {
   border: 2px solid slategray;
 }
@@ -23,4 +20,17 @@ video {
 button {
   margin-top: 10px !important;
   margin-left: 5px !important;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+.call {
+  height: 60%;
+}
+
+.video-container {
+  height: 100%;
+  width: 100%;
 }

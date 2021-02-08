@@ -15,6 +15,8 @@ import { RtcpHelper } from './helper/rtcpHelper';
 import uuid from 'react-uuid';
 import { ModalWrapper } from './components/Modal';
 
+import hangUpPng from './hang-up.svg';
+
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
   socket = new SocketHelper(id),
@@ -93,12 +95,15 @@ function App() {
     }
     setVisibility(false);
   };
+  console.log(hangUpPng);
 
   return (
     <>
-      <div className="d-flex border-2 second-border">
-        <Video ref={callVideoRef} />
-        <Video ref={videoRef} />
+      <div className="d-flex border-2 second-border call">
+        <div className="video-container">
+          <Video ref={callVideoRef} />
+          {/* <Video ref={videoRef} poster={hangUpPng} /> */}
+        </div>
       </div>
       {(isCallHangup && (
         <Button onClick={() => makeCall()} type="primary">
@@ -109,6 +114,7 @@ function App() {
           Close Call
         </Button>
       )}
+      <p>ActiveUsers</p>
 
       <ModalWrapper
         isVisible={isVisible}
