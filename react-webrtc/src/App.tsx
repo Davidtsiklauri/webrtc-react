@@ -17,6 +17,8 @@ import { ModalWrapper } from './components/Modal';
 
 import hangUpPng from './hang-up.svg';
 
+import { ActiveUserListWrapper } from './components/ActiveUserListWrapper';
+
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
   socket = new SocketHelper(id),
@@ -114,7 +116,8 @@ function App() {
           Close Call
         </Button>
       )}
-      <p>ActiveUsers</p>
+
+      <ActiveUserListWrapper />
 
       <ModalWrapper
         isVisible={isVisible}
