@@ -11,7 +11,7 @@ export class SocketHelper {
   private socket: Socket;
 
   constructor(id: string) {
-    this.socket = io('localhost:5000', {
+    this.socket = io('https://7b99211898df.ngrok.io', {
       transports: ['websocket'],
       query: {
         id,

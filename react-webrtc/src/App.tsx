@@ -28,12 +28,13 @@ function App() {
 
   useEffect(() => {
     rtcpHelper.addEventListener('icecandidate', (ev: RTCPeerConnectionIceEvent) => {
-      console.log(ev);
-      // try {
-      //   if (ev.candidate) {
-      //     rtcpHelper.peerConnection.addIceCandidate(ev.candidate);
-      //   }
-      // } catch (e) {}
+      console.log(ev.candidate);
+      if (ev.candidate) {
+        rtcpHelper.peerConnection
+          .addIceCandidate(ev.candidate)
+          .then(console.log)
+          .catch(console.log);
+      }
     });
 
     rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
@@ -46,14 +47,11 @@ function App() {
     });
 
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
-      console.log('offer');
-
       setVisibility(true);
       setOffer(offer);
     }, 'offer');
 
     socket.messageListener<EVENT>(({ answer }: { answer: RTCSessionDescriptionInit }) => {
-      console.log('offer');
       rtcpHelper.setDescription(answer);
     }, 'answer');
 
