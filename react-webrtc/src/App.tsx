@@ -8,7 +8,7 @@ import { EVENT } from './helper/socketHelper';
 
 import './app.css';
 
-import { userMedia, SocketHelper } from './helper/index';
+import { getUserMedia, SocketHelper } from './helper/index';
 import { RtcpHelper } from './helper/rtcpHelper';
 //@ts-ignore
 // fuck react -> robi aslanian
@@ -54,11 +54,11 @@ function App() {
 
     (async () => {
       try {
-        const stream: MediaStream = await userMedia.getUserMedia();
+        const stream: MediaStream = await getUserMedia();
         if (callVideoRef.current) {
           const { current } = callVideoRef;
           current.srcObject = stream;
-
+          current.muted = true;
           stream.getTracks().forEach((track) => rtcpHelper.peerConnection.addTrack(track, stream));
         }
       } catch (e) {
@@ -70,7 +70,7 @@ function App() {
   const makeCall = async () => {
     /**
      * @Temporary
-     * video doesnot open on first setLocalDescription
+     * call doesnot made on first setLocalDescription
      */
     await rtcpHelper.setLocalDescription();
     setTimeout(async () => {
