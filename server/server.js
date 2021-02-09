@@ -1,17 +1,25 @@
 const http = require('http'),
-  io = require('socket.io')(),
   Socket = require('./socket');
 
-let app = http.createServer();
-
-io.attach(app);
-
-const socketInstance = new Socket(io);
-
-socketInstance.getSocket((data, sock, { id }, event) => {
-  socketInstance.emitSocketData(event, data, sock, id);
+const app = http.createServer((req, res) => {
+  const { url } = req;
+  if (url === 'users') {
+  }
+  res.end();
+  userRoute(req, res);
 });
 
 app.listen(5000, () => {
   console.log('init');
 });
+
+const socketInstance = new Socket(app);
+
+socketInstance.getSocket(
+  (data, sock, { id }, event) => {
+    socketInstance.emitSocketData(event, data, sock, id);
+  },
+  (query) => {
+    console.log(query);
+  },
+);
