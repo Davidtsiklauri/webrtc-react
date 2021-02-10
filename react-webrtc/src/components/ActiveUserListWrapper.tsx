@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'antd/dist/antd.css';
 import { Table, Tag, Space } from 'antd';
+import { SocketHelper } from '../helper';
+import { EVENT } from '../models/socket.interface';
+
+interface IProps {
+  socket: SocketHelper;
+}
 
 const columns = [
   {
@@ -65,6 +71,20 @@ const data = [
     tags: ['cool', 'teacher'],
   },
 ];
-export const ActiveUserListWrapper = () => {
+export const ActiveUserListWrapper = ({ socket }: IProps) => {
+  useEffect(() => {
+    socket.messageListener<EVENT>((data) => {
+      console.log(data);
+    }, 'active_users');
+
+    socket.messageListener<EVENT>((data) => {
+      console.log(data);
+    }, 'new_user');
+
+    socket.messageListener<EVENT>((data) => {
+      console.log(data);
+    }, 'disconnect_user');
+  }, []);
+
   return <Table columns={columns} dataSource={data} pagination={false} />;
 };

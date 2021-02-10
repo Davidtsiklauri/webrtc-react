@@ -5,8 +5,6 @@ export interface IData {
   id: string;
 }
 
-export type EVENT = 'offer' | 'answer';
-
 export class SocketHelper {
   private socket: Socket;
 

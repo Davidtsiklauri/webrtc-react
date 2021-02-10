@@ -1,10 +1,9 @@
 import React, { createRef, useEffect, useState } from 'react';
 import { Button } from 'antd';
 
-import { Video } from './components/Video';
+import { Video } from './shared/components/Video';
 
 import { CONFIG } from './config/config';
-import { EVENT } from './helper/socketHelper';
 
 import './app.css';
 
@@ -13,11 +12,12 @@ import { RtcpHelper } from './helper/rtcpHelper';
 //@ts-ignore
 // fuck react -> robi aslanian
 import uuid from 'react-uuid';
-import { ModalWrapper } from './components/Modal';
+import { ModalWrapper } from './shared/components/Modal';
 
 import hangUpPng from './hang-up.svg';
 
 import { ActiveUserListWrapper } from './components/ActiveUserListWrapper';
+import { EVENT } from './models/socket.interface';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
@@ -97,7 +97,6 @@ function App() {
     }
     setVisibility(false);
   };
-  console.log(hangUpPng);
 
   return (
     <>
@@ -117,7 +116,7 @@ function App() {
         </Button>
       )}
 
-      <ActiveUserListWrapper />
+      <ActiveUserListWrapper socket={socket} />
 
       <ModalWrapper
         isVisible={isVisible}
