@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import { Table, Tag, Space } from 'antd';
 import { SocketHelper } from '../helper';
 import { EVENT } from '../models/socket.interface';
+import { IActiveUsers, TagEnum } from '../models/activeUsers.interface';
 
 interface IProps {
   socket: SocketHelper;
@@ -11,32 +12,21 @@ interface IProps {
 const columns = [
   {
     title: 'IP ADDRESS',
-    dataIndex: 'ipAddress',
-    key: 'name',
+    dataIndex: 'address',
+    key: 'address',
     render: (text: any) => <a>{text}</a>,
   },
   {
     title: 'USER ID',
-    dataIndex: 'userId',
-    key: 'age',
+    dataIndex: 'id',
   },
   {
     title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (tags: any) => (
+    key: 'tag',
+    dataIndex: 'tag',
+    render: (tag: keyof typeof TagEnum) => (
       <>
-        {tags.map((tag: any) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
+        <Tag color={'geekblue'}>{TagEnum[tag]}</Tag>
       </>
     ),
   },
@@ -72,19 +62,26 @@ const data = [
   },
 ];
 export const ActiveUserListWrapper = ({ socket }: IProps) => {
+  const [activeUserList, setColumns] = useState<IActiveUsers[]>([]);
+
   useEffect(() => {
-    socket.messageListener<EVENT>((data) => {
-      console.log(data);
+    socket.messageListener<EVENT>((data: IActiveUsers[]) => {
+      setColumns(data);
     }, 'active_users');
 
-    socket.messageListener<EVENT>((data) => {
-      console.log(data);
+    socket.messageListener<EVENT>(({ new_user }: { new_user: IActiveUsers }) => {
+      setColumns((activeUsers: IActiveUsers[]) => {
+        return [...activeUsers, new_user];
+      });
     }, 'new_user');
 
-    socket.messageListener<EVENT>((data) => {
-      console.log(data);
-    }, 'disconnect_user');
-  }, []);
+    socket.messageListener<EVENT>(({ disconnect_user_id }: { disconnect_user_id: string }) => {
+      setColumns((activeUsers: IActiveUsers[]) => {
+        console.log(activeUsers, disconnect_user_id);
+        return activeUsers.filter((users) => users.id !== disconnect_user_id);
+      });
+    }, 'disconnect_user_id');
+  }, [socket]);
 
-  return <Table columns={columns} dataSource={data} pagination={false} />;
+  return <Table columns={columns} dataSource={activeUserList} pagination={false} rowKey="id" />;
 };

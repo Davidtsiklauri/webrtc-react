@@ -35,7 +35,7 @@ class Socket {
 
       sock.on('disconnect', (data) => {
         const disconnect_id = sock.handshake.query.id;
-        this.emitSocketData('disconnect_user', disconnect_id, sock);
+        this.emitSocketData('disconnect_user_id', disconnect_id, sock);
         this.usersMap.delete(disconnect_id);
       });
     });
