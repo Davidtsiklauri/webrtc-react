@@ -8,6 +8,7 @@ import { Video } from '../shared/components/Video';
 import { ActiveUserListWrapper } from './ActiveUserListWrapper';
 
 import uuid from 'react-uuid';
+import './video.sass';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
@@ -93,9 +94,9 @@ export const UserCallWrapper = () => {
   return (
     <>
       <div className="d-flex border-2 second-border call">
-        <div className="video-container">
+        <div className="video-container d-flex">
           <Video ref={callVideoRef} />
-          <Video ref={videoRef} />
+          {/* <Video ref={videoRef} /> */}
         </div>
       </div>
       {/* {(isCallHangup && (
