@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserCallWrapper } from './components/UserCallWrapper';
+import { UserCallWrapper } from './features/call/UserCallWrapper';
 
 function App() {
   return <UserCallWrapper />;
