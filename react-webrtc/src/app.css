@@ -9,10 +9,6 @@ video {
   border: 2px solid slategray;
 }
 
-.border-2 video:nth-child(1) {
-  border-right: 1px solid red !important;
-}
-
 .second-border video:nth-child(2) {
   border-left: 1px;
 }

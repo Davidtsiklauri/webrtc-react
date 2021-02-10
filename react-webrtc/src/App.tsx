@@ -14,10 +14,9 @@ import { RtcpHelper } from './helper/rtcpHelper';
 import uuid from 'react-uuid';
 import { ModalWrapper } from './shared/components/Modal';
 
-import hangUpPng from './hang-up.svg';
-
 import { ActiveUserListWrapper } from './components/ActiveUserListWrapper';
 import { EVENT } from './models/socket.interface';
+import { PersistentStorage } from './shared/classes/persistent.storage';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
@@ -29,6 +28,8 @@ function App() {
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
   const [isCallHangup, setCallHangup] = useState(true);
+  const storage = new PersistentStorage(localStorage);
+  storage.setItem('id', id);
 
   useEffect(() => {
     rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
@@ -106,7 +107,7 @@ function App() {
           {/* <Video ref={videoRef} poster={hangUpPng} /> */}
         </div>
       </div>
-      {(isCallHangup && (
+      {/* {(isCallHangup && (
         <Button onClick={() => makeCall()} type="primary">
           Make A Call
         </Button>
@@ -114,9 +115,9 @@ function App() {
         <Button onClick={closeCall} type="primary">
           Close Call
         </Button>
-      )}
+      )} */}
 
-      <ActiveUserListWrapper socket={socket} />
+      <ActiveUserListWrapper socket={socket} cb={makeCall} />
 
       <ModalWrapper
         isVisible={isVisible}
