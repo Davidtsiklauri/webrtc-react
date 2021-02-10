@@ -15,11 +15,6 @@ app.listen(5000, () => {
 
 const socketInstance = new Socket(app);
 
-socketInstance.getSocket(
-  (data, sock, { id }, event) => {
-    socketInstance.emitSocketData(event, data, sock, id);
-  },
-  (query) => {
-    console.log(query);
-  },
-);
+socketInstance.getSocket((data, sock, { id }, event) => {
+  socketInstance.emitSocketData(event, data, sock, id);
+});

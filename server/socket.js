@@ -1,18 +1,30 @@
-const io = require('socket.io')();
+const io = require('socket.io')(),
+  USER_TAGS = require('./data/tags'),
+  UTILS = require('./utils/utils');
 
 class Socket {
   socket = null;
-  users = new Map();
+  usersMap = new Map();
+  utils;
   constructor(app) {
     io.attach(app);
     this.socket = io;
+    this.utils = new UTILS();
   }
 
-  getSocket(cb, getQueryCb) {
+  getSocket(cb) {
     this.socket.on('connection', (sock) => {
-      this.users.set(sock.handshake.query, sock.handshake.query);
-      this.emitSocketData('new_user', sock.handshake.query, sock);
-      sock.emit('active_users', { data: this.users.values() });
+      const { id } = sock.handshake.query;
+      const { address } = sock.handshake;
+
+      const randomIndex = this.utils.getRandomNumber(USER_TAGS.length);
+      const randTag = this.utils.getRandomByArrayIndex(USER_TAGS, randomIndex);
+
+      this.usersMap.set(id, { id, tag: randTag, address: address });
+
+      this.emitSocketData('new_user', this.usersMap.get(id), sock);
+
+      sock.emit('active_users', Array.from(this.usersMap.values()));
 
       sock.on('answer', (data) => {
         cb(data, sock, sock.handshake.query, 'answer');
@@ -20,16 +32,11 @@ class Socket {
       sock.on('offer', (data) => {
         cb(data, sock, sock.handshake.query, 'offer');
       });
-      sock.on('active_users', (data) => {
-        this.emitSocketData('active_users', this.users, sock);
-      });
-      sock.on('active_users', (data) => {
-        this.emitSocketData('active_users', this.users, sock);
-      });
+
       sock.on('disconnect', (data) => {
-        const { id } = sock.handshake.query;
-        this.emitSocketData('disconnect_user', id, sock);
-        this.users.delete(id);
+        const disconnect_id = sock.handshake.query.id;
+        this.emitSocketData('disconnect_user', disconnect_id, sock);
+        this.usersMap.delete(disconnect_id);
       });
     });
   }
