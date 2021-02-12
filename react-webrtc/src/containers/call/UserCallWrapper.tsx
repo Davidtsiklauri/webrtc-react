@@ -1,14 +1,14 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { CONFIG } from '../config/config';
-import { RtcpHelper, SocketHelper, getUserMedia } from '../helper';
-import { EVENT } from '../models/socket.interface';
-import { PersistentStorage } from '../shared/classes/persistent.storage';
-import { ModalWrapper } from '../shared/components/Modal';
-import { Video } from '../shared/components/Video';
 import { ActiveUserListWrapper } from './ActiveUserListWrapper';
 
 import uuid from 'react-uuid';
 import './video.sass';
+import { CONFIG } from '../../config/config';
+import { RtcpHelper, SocketHelper, getUserMedia } from '../../helper';
+import { EVENT } from '../../models/socket.interface';
+import { PersistentStorage } from '../../shared/classes/persistent.storage';
+import { ModalWrapper } from '../../shared/components/Modal';
+import { Video } from '../../shared/components/Video';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
@@ -93,10 +93,10 @@ export const UserCallWrapper = () => {
 
   return (
     <>
-      <div className="d-flex border-2 second-border call">
-        <div className="video-container d-flex">
-          <Video ref={callVideoRef} />
-          {/* <Video ref={videoRef} /> */}
+      <div className="d-flex justify-content-center border-2 second-border call">
+        <div className="video-container">
+          <Video ref={callVideoRef} className="active-video" />
+          <Video ref={videoRef} />
         </div>
       </div>
       {/* {(isCallHangup && (

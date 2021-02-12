@@ -1,5 +1,13 @@
 import React from 'react';
 
-export const Video = React.forwardRef((props: any, ref: React.ForwardedRef<HTMLVideoElement>) => (
-  <video ref={ref} poster={props?.poster} autoPlay></video>
-));
+interface IProps {
+  poster?: string;
+  className?: string;
+}
+
+export const Video = React.forwardRef(
+  (props: IProps, ref: React.ForwardedRef<HTMLVideoElement>) => {
+    const { className, poster } = props;
+    return <video ref={ref} poster={poster} autoPlay className={className}></video>;
+  },
+);

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Tag, Space } from 'antd';
-import { SocketHelper } from '../helper';
-import { EVENT } from '../models/socket.interface';
-import { IActiveUsers, TagEnum } from '../models/activeUsers.interface';
-import { PersistentStorage } from '../shared/classes/persistent.storage';
+import { Table, Tag, Space, Button } from 'antd';
+import { SocketHelper } from '../../helper';
+import { TagEnum, IActiveUsers } from '../../models/activeUsers.interface';
+import { EVENT } from '../../models/socket.interface';
+import { PersistentStorage } from '../../shared/classes/persistent.storage';
+
 interface IProps {
   socket: SocketHelper;
   cb: () => any;
@@ -48,7 +49,7 @@ const isMe = (userId: string, myId: string) => {
   if (userId !== myId) {
     return (
       <Space size="middle">
-        <a>Call</a>
+        <Button type="link">Call</Button>
       </Space>
     );
   }
