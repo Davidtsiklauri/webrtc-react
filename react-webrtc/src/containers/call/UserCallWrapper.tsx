@@ -18,11 +18,9 @@ const rtcpHelper = new RtcpHelper(CONFIG),
   videoRef = createRef() as React.RefObject<HTMLVideoElement>,
   callVideoRef = createRef() as React.RefObject<HTMLVideoElement>,
   mapDispatch = { updateStatus },
-  mapStateProps = (state) => ({ gia: state.call });
+  mapStateProps = (state) => ({ state: state.call });
 
-const UserCallWrapper = ({ updateStatus, gia }) => {
-  console.log(gia);
-
+const UserCallWrapper = ({ updateStatus, state }) => {
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
   const [isCall, setCallHangup] = useState(true);
@@ -73,10 +71,6 @@ const UserCallWrapper = ({ updateStatus, gia }) => {
 
   const makeCall = async () => {
     updateStatus({ status: 'PENDING' });
-    /**
-     * @Temporary
-     * call doesnot made on first setLocalDescription
-     */
     await rtcpHelper.setLocalDescription();
     setTimeout(async () => {
       const offer = await rtcpHelper.setLocalDescription();
@@ -103,7 +97,7 @@ const UserCallWrapper = ({ updateStatus, gia }) => {
     <>
       <div className="d-flex justify-content-center border-2 second-border call">
         <div className="video-container">
-          {gia.status}
+          {state.status}
           {/* <Video ref={callVideoRef} /> */}
           {/* <Video ref={videoRef} /> */}
         </div>
