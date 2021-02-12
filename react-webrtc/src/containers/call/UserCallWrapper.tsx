@@ -9,18 +9,25 @@ import { EVENT } from '../../models/socket.interface';
 import { PersistentStorage } from '../../shared/classes/persistent.storage';
 import { ModalWrapper } from '../../shared/components/Modal';
 import { Video } from '../../shared/components/Video';
+import { updateStatus } from './callSlice';
+import { connect } from 'react-redux';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
   socket = new SocketHelper(id),
   videoRef = createRef() as React.RefObject<HTMLVideoElement>,
-  callVideoRef = createRef() as React.RefObject<HTMLVideoElement>;
+  callVideoRef = createRef() as React.RefObject<HTMLVideoElement>,
+  mapDispatch = { updateStatus },
+  mapStateProps = (state) => ({ gia: state.call });
 
-export const UserCallWrapper = () => {
+const UserCallWrapper = ({ updateStatus, gia }) => {
+  console.log(gia);
+
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
   const [isCall, setCallHangup] = useState(true);
   const storage = new PersistentStorage(localStorage);
+
   storage.setItem('id', id);
 
   useEffect(() => {
@@ -65,6 +72,7 @@ export const UserCallWrapper = () => {
   }, []);
 
   const makeCall = async () => {
+    updateStatus({ status: 'PENDING' });
     /**
      * @Temporary
      * call doesnot made on first setLocalDescription
@@ -90,13 +98,14 @@ export const UserCallWrapper = () => {
     }
     setVisibility(false);
   };
-
+  // className="active-video"
   return (
     <>
       <div className="d-flex justify-content-center border-2 second-border call">
         <div className="video-container">
-          <Video ref={callVideoRef} className="active-video" />
-          <Video ref={videoRef} />
+          {gia.status}
+          {/* <Video ref={callVideoRef} /> */}
+          {/* <Video ref={videoRef} /> */}
         </div>
       </div>
       {/* {(isCallHangup && (
@@ -120,3 +129,5 @@ export const UserCallWrapper = () => {
     </>
   );
 };
+
+export default connect(mapStateProps, mapDispatch)(UserCallWrapper);

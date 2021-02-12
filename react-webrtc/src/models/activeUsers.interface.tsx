@@ -14,3 +14,9 @@ export interface IActiveUsers {
   tag: TagEnum;
   address: string;
 }
+
+export type CallState = 'PENING' | 'DONE' | 'REQUEST' | 'START';
+
+export interface IStatusState {
+  status: CallState;
+}

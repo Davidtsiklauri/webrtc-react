@@ -1,4 +1,8 @@
 import { combineReducers } from 'redux';
 import callReducer from '../containers/call/callSlice';
 
-export default callReducer;
+const callApp = combineReducers({
+  call: callReducer,
+});
+
+export default callApp;
