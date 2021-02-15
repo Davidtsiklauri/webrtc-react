@@ -38,7 +38,6 @@ const UserCallWrapper = ({ updateStatus, state }) => {
 
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
       console.log('offer', offer);
-
       setVisibility(true);
       setOffer(offer);
     }, 'offer');
@@ -97,9 +96,8 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     <>
       <div className="d-flex justify-content-center border-2 second-border call">
         <div className="video-container">
-          {state.status}
-          {/* <Video ref={callVideoRef} /> */}
-          {/* <Video ref={videoRef} /> */}
+          <Video ref={callVideoRef} />
+          <Video ref={videoRef} />
         </div>
       </div>
       {/* {(isCallHangup && (

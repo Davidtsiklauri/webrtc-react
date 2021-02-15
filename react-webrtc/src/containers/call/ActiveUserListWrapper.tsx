@@ -13,7 +13,7 @@ interface IProps {
 
 const storage = new PersistentStorage(localStorage);
 
-const getColumns = async (): Promise<any> => {
+const getColumns = async (cb): Promise<any> => {
   const id = await storage.getItem<string>('id');
   return [
     {
@@ -39,18 +39,19 @@ const getColumns = async (): Promise<any> => {
     {
       title: 'Action',
       key: 'action',
-
-      render: (user: IActiveUsers) => isMe(user.id, id),
+      render: (user: IActiveUsers) => callUser(user.id, id, cb),
     },
   ];
 };
 
-const isMe = (userId: string, myId: string) => {
+const callUser = (userId: string, myId: string, cb) => {
   if (userId !== myId) {
     return (
-      <Space size="middle">
-        <Button type="link">Call</Button>
-      </Space>
+      <div onClick={cb}>
+        <Space size="middle">
+          <Button type="link">Call</Button>
+        </Space>
+      </div>
     );
   }
   return;
@@ -62,7 +63,7 @@ export const ActiveUserListWrapper = ({ socket, cb }: IProps) => {
 
   useEffect(() => {
     (async () => {
-      setColumns(await getColumns());
+      setColumns(await getColumns(cb));
     })();
   }, []);
 
@@ -84,22 +85,5 @@ export const ActiveUserListWrapper = ({ socket, cb }: IProps) => {
     }, 'disconnect_user_id');
   }, [socket]);
 
-  return (
-    <Table
-      columns={columns}
-      dataSource={activeUserList}
-      pagination={false}
-      rowKey="id"
-      onRow={(data) => {
-        return {
-          onClick: async () => {
-            const id = await storage.getItem<string>('id');
-            if (id !== data.id) {
-              cb();
-            }
-          }, // click row
-        };
-      }}
-    />
-  );
+  return <Table columns={columns} dataSource={activeUserList} pagination={false} rowKey="id" />;
 };
