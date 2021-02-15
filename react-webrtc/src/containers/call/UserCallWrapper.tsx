@@ -1,22 +1,20 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActiveUserListWrapper } from './ActiveUserListWrapper';
+import { VideoCallWrapper } from './VideoCallWrapper';
 
 import uuid from 'react-uuid';
 import './video.sass';
 import { CONFIG } from '../../config/config';
-import { RtcpHelper, SocketHelper, getUserMedia } from '../../helper';
+import { RtcpHelper, SocketHelper } from '../../helper';
 import { EVENT } from '../../models/socket.interface';
 import { PersistentStorage } from '../../shared/classes/persistent.storage';
 import { ModalWrapper } from '../../shared/components/Modal';
-import { Video } from '../../shared/components/Video';
 import { updateStatus } from './callSlice';
 import { connect } from 'react-redux';
 
 const rtcpHelper = new RtcpHelper(CONFIG),
   id = uuid(),
   socket = new SocketHelper(id),
-  videoRef = createRef() as React.RefObject<HTMLVideoElement>,
-  callVideoRef = createRef() as React.RefObject<HTMLVideoElement>,
   mapDispatch = { updateStatus },
   mapStateProps = (state) => ({ state: state.call });
 
@@ -45,27 +43,6 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     socket.messageListener<EVENT>(({ answer }: { answer: RTCSessionDescriptionInit }) => {
       rtcpHelper.setDescription(answer);
     }, 'answer');
-
-    rtcpHelper.peerConnection.ontrack = ({ streams: [stream] }) => {
-      if (videoRef.current) {
-        const { current } = videoRef;
-        current.srcObject = stream;
-      }
-    };
-
-    (async () => {
-      try {
-        const stream: MediaStream = await getUserMedia();
-        if (callVideoRef.current) {
-          const { current } = callVideoRef;
-          current.srcObject = stream;
-          current.muted = true;
-          stream.getTracks().forEach((track) => rtcpHelper.peerConnection.addTrack(track, stream));
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    })();
   }, []);
 
   const makeCall = async () => {
@@ -95,10 +72,7 @@ const UserCallWrapper = ({ updateStatus, state }) => {
   return (
     <>
       <div className="d-flex justify-content-center border-2 second-border call">
-        <div className="video-container">
-          <Video ref={callVideoRef} />
-          <Video ref={videoRef} />
-        </div>
+        <VideoCallWrapper rtcpHelper={rtcpHelper} />
       </div>
       {/* {(isCallHangup && (
           <Button onClick={() => makeCall()} type="primary">
