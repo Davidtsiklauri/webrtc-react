@@ -31,8 +31,13 @@ const UserCallWrapper = ({ updateStatus, state }) => {
       setCallHangup(false);
     });
 
-    rtcpHelper.peerConnection.oniceconnectionstatechange = () =>
-      console.log(rtcpHelper.peerConnection.iceConnectionState);
+    rtcpHelper.peerConnection.oniceconnectionstatechange = () => {
+      const status = rtcpHelper.peerConnection.iceConnectionState;
+      if (status === 'disconnected') {
+        alert('status');
+        setCallHangup(false);
+      }
+    };
 
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
       console.log('offer', offer);

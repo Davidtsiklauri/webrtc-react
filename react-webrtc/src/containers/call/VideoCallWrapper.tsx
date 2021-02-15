@@ -19,6 +19,9 @@ export const VideoCallWrapper = ({ rtcpHelper }: IVideoCallWrapperProps) => {
           current.srcObject = stream;
           current.muted = true;
           stream.getTracks().forEach((track) => rtcpHelper.peerConnection.addTrack(track, stream));
+          stream.addEventListener('removetrack', (v) => {
+            console.log(v);
+          });
         }
       } catch (e) {
         console.log(e);
