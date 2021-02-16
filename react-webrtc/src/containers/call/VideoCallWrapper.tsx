@@ -4,6 +4,8 @@ import { getUserMedia, RtcpHelper } from '../../helper/index';
 import { connect } from 'react-redux';
 import { Loader } from '../../shared/components/Loader';
 import { IStatusState } from '../../models/activeUsers.interface';
+// import hang from '../../assets/hang-up.svg';
+import { Svg } from '../../shared/components/Svg';
 
 const videoRef = createRef() as React.RefObject<HTMLVideoElement>,
   callVideoRef = createRef() as React.RefObject<HTMLVideoElement>,
@@ -15,6 +17,8 @@ interface IVideoCallWrapperProps {
 }
 
 const VideoCallWrapper = ({ rtcpHelper, state }: IVideoCallWrapperProps) => {
+  console.log();
+
   useEffect(() => {
     (async () => {
       try {
@@ -46,6 +50,7 @@ const VideoCallWrapper = ({ rtcpHelper, state }: IVideoCallWrapperProps) => {
       />
       {state.status === 'PENDING' && <Loader />}
       <Video ref={videoRef} className="position-absoulute" />
+      <Svg url="assets/hang-up.svg" width={30} height={30} gia="absoulute" />
     </div>
   );
 };
