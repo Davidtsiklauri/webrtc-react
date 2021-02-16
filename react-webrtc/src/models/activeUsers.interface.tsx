@@ -15,7 +15,7 @@ export interface IActiveUsers {
   address: string;
 }
 
-export type CallState = 'PENING' | 'DONE' | 'REQUEST' | 'START';
+export type CallState = 'PENDING' | 'DONE' | 'REQUEST' | 'START' | 'PROGRESS';
 
 export interface IStatusState {
   status: CallState;

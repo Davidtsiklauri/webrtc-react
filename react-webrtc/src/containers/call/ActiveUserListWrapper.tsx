@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import { Table, Tag, Space, Button } from 'antd';
 import { SocketHelper } from '../../helper';
-import { TagEnum, IActiveUsers } from '../../models/activeUsers.interface';
+import { TagEnum, IActiveUsers, IStatusState } from '../../models/activeUsers.interface';
 import { EVENT } from '../../models/socket.interface';
 import { PersistentStorage } from '../../shared/classes/persistent.storage';
 
 interface IProps {
   socket: SocketHelper;
   cb: () => any;
+  callProgress: IStatusState;
 }
 
 const storage = new PersistentStorage(localStorage);
 
-const getColumns = async (cb): Promise<any> => {
+const getColumns = async (cb, callProg: IStatusState): Promise<any> => {
   const id = await storage.getItem<string>('id');
   return [
     {
@@ -39,17 +40,17 @@ const getColumns = async (cb): Promise<any> => {
     {
       title: 'Action',
       key: 'action',
-      render: (user: IActiveUsers) => callUser(user.id, id, cb),
+      render: (user: IActiveUsers) => callUser(user.id, id, cb, callProg),
     },
   ];
 };
 
-const callUser = (userId: string, myId: string, cb) => {
+const callUser = (userId: string, myId: string, cb, callProg: IStatusState) => {
   if (userId !== myId) {
     return (
       <div onClick={cb}>
         <Space size="middle">
-          <Button type="link">Call</Button>
+          {callProg.status !== 'PROGRESS' && <Button type="link">Call</Button>}
         </Space>
       </div>
     );
@@ -57,13 +58,15 @@ const callUser = (userId: string, myId: string, cb) => {
   return;
 };
 
-export const ActiveUserListWrapper = ({ socket, cb }: IProps) => {
+export const ActiveUserListWrapper = ({ socket, cb, callProgress }: IProps) => {
+  console.log(callProgress);
+
   const [activeUserList, setUseList] = useState<IActiveUsers[]>([]);
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
     (async () => {
-      setColumns(await getColumns(cb));
+      setColumns(await getColumns(cb, callProgress));
     })();
   }, []);
 

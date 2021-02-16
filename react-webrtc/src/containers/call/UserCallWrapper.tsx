@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActiveUserListWrapper } from './ActiveUserListWrapper';
-import { VideoCallWrapper } from './VideoCallWrapper';
+import VideoCallWrapper from './VideoCallWrapper';
 
 import uuid from 'react-uuid';
 import './video.sass';
@@ -22,25 +22,26 @@ const UserCallWrapper = ({ updateStatus, state }) => {
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
   const [isCall, setCallHangup] = useState(true);
-  const storage = new PersistentStorage(localStorage);
-
-  storage.setItem('id', id);
 
   useEffect(() => {
+    const storage = new PersistentStorage(localStorage);
+    storage.setItem('id', id);
+
     rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
-      setCallHangup(false);
+      // setCallHangup(false);
     });
 
     rtcpHelper.peerConnection.oniceconnectionstatechange = () => {
       const status = rtcpHelper.peerConnection.iceConnectionState;
       if (status === 'disconnected') {
-        alert('status');
         setCallHangup(false);
+      }
+      if (status === 'connected') {
+        updateStatus({ status: 'PROGRESS' });
       }
     };
 
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
-      console.log('offer', offer);
       setVisibility(true);
       setOffer(offer);
     }, 'offer');
@@ -89,7 +90,7 @@ const UserCallWrapper = ({ updateStatus, state }) => {
           </Button>
         )} */}
 
-      <ActiveUserListWrapper socket={socket} cb={makeCall} />
+      <ActiveUserListWrapper socket={socket} cb={makeCall} callProgress={state} />
 
       <ModalWrapper
         isVisible={isVisible}

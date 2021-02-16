@@ -6,8 +6,8 @@
     display: flex
     margin-bottom: 10px
     max-width: 748px
+    width: 100%
     video
-        border-radius: 4px
         object-fit: cover
         width: 100%
     .active-video
@@ -16,9 +16,14 @@
         position: absolute
         border: 5px
         right: 0
+        z-index: 1
+        border-radius: 4px
         bottom: 0
 
 .d-flex
     display: flex
 .justify-content-center
     justify-content: center
+
+.position-absoulute
+    position: absolute
