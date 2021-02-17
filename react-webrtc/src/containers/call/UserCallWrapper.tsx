@@ -21,7 +21,6 @@ const rtcpHelper = new RtcpHelper(CONFIG),
 const UserCallWrapper = ({ updateStatus, state }) => {
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
-  const [isCall, setCallHangup] = useState(true);
 
   useEffect(() => {
     const storage = new PersistentStorage(localStorage);
@@ -34,7 +33,6 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     rtcpHelper.peerConnection.oniceconnectionstatechange = () => {
       const status = rtcpHelper.peerConnection.iceConnectionState;
       if (status === 'disconnected') {
-        setCallHangup(false);
       }
       if (status === 'connected') {
         updateStatus({ status: 'PROGRESS' });
@@ -61,8 +59,8 @@ const UserCallWrapper = ({ updateStatus, state }) => {
   };
 
   const closeCall = () => {
+    updateStatus({ status: 'START' });
     rtcpHelper.peerConnection.close();
-    setCallHangup(true);
   };
 
   const onModalClose = async (isCancel: boolean = false) => {
@@ -74,24 +72,12 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     }
     setVisibility(false);
   };
-  // className="active-video"
   return (
     <>
       <div className="d-flex justify-content-center border-2 second-border call">
-        <VideoCallWrapper rtcpHelper={rtcpHelper} />
+        <VideoCallWrapper rtcpHelper={rtcpHelper} closeCallFn={closeCall} />
       </div>
-      {/* {(isCallHangup && (
-          <Button onClick={() => makeCall()} type="primary">
-            Make A Call
-          </Button>
-        )) || (
-          <Button onClick={closeCall} type="primary">
-            Close Call
-          </Button>
-        )} */}
-
       <ActiveUserListWrapper socket={socket} cb={makeCall} callProgress={state} />
-
       <ModalWrapper
         isVisible={isVisible}
         onConfrim={() => onModalClose(false)}

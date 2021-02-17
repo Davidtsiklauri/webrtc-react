@@ -4,7 +4,6 @@ import { getUserMedia, RtcpHelper } from '../../helper/index';
 import { connect } from 'react-redux';
 import { Loader } from '../../shared/components/Loader';
 import { IStatusState } from '../../models/activeUsers.interface';
-// import hang from '../../assets/hang-up.svg';
 import { Svg } from '../../shared/components/Svg';
 
 const videoRef = createRef() as React.RefObject<HTMLVideoElement>,
@@ -14,11 +13,10 @@ const videoRef = createRef() as React.RefObject<HTMLVideoElement>,
 interface IVideoCallWrapperProps {
   rtcpHelper: RtcpHelper;
   state: IStatusState;
+  closeCallFn: any;
 }
 
-const VideoCallWrapper = ({ rtcpHelper, state }: IVideoCallWrapperProps) => {
-  console.log();
-
+const VideoCallWrapper = ({ rtcpHelper, state, closeCallFn }: IVideoCallWrapperProps) => {
   useEffect(() => {
     (async () => {
       try {
@@ -50,7 +48,20 @@ const VideoCallWrapper = ({ rtcpHelper, state }: IVideoCallWrapperProps) => {
       />
       {state.status === 'PENDING' && <Loader />}
       <Video ref={videoRef} className="position-absoulute" />
-      <Svg url="assets/hang-up.svg" width={30} height={30} gia="absoulute" />
+
+      {state.status === 'PROGRESS' && (
+        <button onClick={closeCallFn}>
+          <Svg
+            background="assets/hang-up.svg"
+            height="30px"
+            width="30px"
+            position="absolute"
+            zIndex="3"
+            bottom="19px"
+            cursor="pointer"
+          />
+        </button>
+      )}
     </div>
   );
 };

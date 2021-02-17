@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
-export const Svg = ({ url, ...rest }: { [K in keyof React.CSSProperties]: string } | any) => {
+export const Svg = ({ background, ...rest }: { [K in keyof CSSProperties]: string }) => {
   try {
-    const svg = require(`../../${url}`);
+    const svg = require(`../../${background}`);
+    //@ts-ignore
     return <img src={svg} alt="" style={rest} />;
   } catch (e) {
     console.warn('image not found', e);
