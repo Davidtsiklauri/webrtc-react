@@ -47,7 +47,10 @@ const VideoCallWrapper = ({ rtcpHelper, state, closeCallFn }: IVideoCallWrapperP
         className={`${state.status === 'PROGRESS' && 'active-video'} position-absoulute`}
       />
       {state.status === 'PENDING' && <Loader />}
-      <Video ref={videoRef} className="position-absoulute" />
+      <Video
+        ref={videoRef}
+        className={`position-absoulute ${state.status === 'START' && 'hidden'}`}
+      />
 
       {state.status === 'PROGRESS' && (
         <button onClick={closeCallFn}>
