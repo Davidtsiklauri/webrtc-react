@@ -32,6 +32,9 @@ class Socket {
       sock.on('offer', (data) => {
         cb(data, sock, sock.handshake.query, 'offer');
       });
+      sock.on('close', (data) => {
+        cb(data, sock, sock.handshake.query, 'close');
+      });
 
       sock.on('disconnect', (data) => {
         const disconnect_id = sock.handshake.query.id;

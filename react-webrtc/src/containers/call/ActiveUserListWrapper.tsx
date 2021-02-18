@@ -5,14 +5,17 @@ import { SocketHelper } from '../../helper';
 import { TagEnum, IActiveUsers, IStatusState } from '../../models/activeUsers.interface';
 import { EVENT } from '../../models/socket.interface';
 import { PersistentStorage } from '../../shared/classes/persistent.storage';
+import { connect } from 'react-redux';
 
 interface IProps {
   socket: SocketHelper;
   cb: () => any;
   callProgress: IStatusState;
+  state: IStatusState;
 }
 
-const storage = new PersistentStorage(localStorage);
+const storage = new PersistentStorage(localStorage),
+  mapStateProps = (state) => ({ state: state.call });
 
 const getColumns = async (cb, callProg: IStatusState): Promise<any> => {
   const id = await storage.getItem<string>('id');
@@ -58,17 +61,15 @@ const callUser = (userId: string, myId: string, cb, callProg: IStatusState) => {
   return;
 };
 
-export const ActiveUserListWrapper = ({ socket, cb, callProgress }: IProps) => {
-  console.log(callProgress);
-
+const ActiveUserListWrapper = ({ socket, cb, state }: IProps) => {
   const [activeUserList, setUseList] = useState<IActiveUsers[]>([]);
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
     (async () => {
-      setColumns(await getColumns(cb, callProgress));
+      setColumns(await getColumns(cb, state));
     })();
-  }, []);
+  }, [state]);
 
   useEffect(() => {
     socket.messageListener<EVENT>((data: IActiveUsers[]) => {
@@ -90,3 +91,5 @@ export const ActiveUserListWrapper = ({ socket, cb, callProgress }: IProps) => {
 
   return <Table columns={columns} dataSource={activeUserList} pagination={false} rowKey="id" />;
 };
+
+export default connect(mapStateProps)(ActiveUserListWrapper);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActiveUserListWrapper } from './ActiveUserListWrapper';
+import ActiveUserListWrapper from './ActiveUserListWrapper';
 import VideoCallWrapper from './VideoCallWrapper';
 
 import uuid from 'react-uuid';
@@ -12,8 +12,8 @@ import { ModalWrapper } from '../../shared/components/Modal';
 import { updateStatus } from './callSlice';
 import { connect } from 'react-redux';
 
-const rtcpHelper = new RtcpHelper(CONFIG),
-  id = uuid(),
+const id = uuid(),
+  rtcpHelper = new RtcpHelper(CONFIG),
   socket = new SocketHelper(id),
   mapDispatch = { updateStatus },
   mapStateProps = (state) => ({ state: state.call });
@@ -47,20 +47,30 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     socket.messageListener<EVENT>(({ answer }: { answer: RTCSessionDescriptionInit }) => {
       rtcpHelper.setDescription(answer);
     }, 'answer');
+    socket.messageListener<EVENT>((ev: any) => {
+      updateStatus({ status: 'START' });
+      rtcpHelper.peerConnection.close();
+      console.log(rtcpHelper);
+    }, 'close');
   }, []);
 
   const makeCall = async () => {
     updateStatus({ status: 'PENDING' });
-    await rtcpHelper.setLocalDescription();
-    setTimeout(async () => {
-      const offer = await rtcpHelper.setLocalDescription();
-      socket.emit<EVENT>('offer', offer);
-    }, 0);
+    try {
+      await rtcpHelper.setLocalDescription();
+      setTimeout(async () => {
+        const offer = await rtcpHelper.setLocalDescription();
+        socket.emit<EVENT>('offer', offer);
+      }, 0);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const closeCall = () => {
     updateStatus({ status: 'START' });
     rtcpHelper.peerConnection.close();
+    socket.emit<EVENT>('close', id);
   };
 
   const onModalClose = async (isCancel: boolean = false) => {
@@ -77,7 +87,7 @@ const UserCallWrapper = ({ updateStatus, state }) => {
       <div className="d-flex justify-content-center border-2 second-border call">
         <VideoCallWrapper rtcpHelper={rtcpHelper} closeCallFn={closeCall} />
       </div>
-      <ActiveUserListWrapper socket={socket} cb={makeCall} callProgress={state} />
+      <ActiveUserListWrapper socket={socket} cb={makeCall} />
       <ModalWrapper
         isVisible={isVisible}
         onConfrim={() => onModalClose(false)}
