@@ -15,20 +15,15 @@ import { connect } from 'react-redux';
 const id = uuid(),
   rtcpHelper = new RtcpHelper(CONFIG),
   socket = new SocketHelper(id),
-  mapDispatch = { updateStatus },
-  mapStateProps = (state) => ({ state: state.call });
+  mapDispatch = { updateStatus };
 
-const UserCallWrapper = ({ updateStatus, state }) => {
+const UserCallWrapper = ({ updateStatus }) => {
   const [isVisible, setVisibility] = useState(false);
   const [offer, setOffer] = useState({});
 
   useEffect(() => {
     const storage = new PersistentStorage(localStorage);
     storage.setItem('id', id);
-
-    rtcpHelper.addEventListener('connectionstatechange', (ev: RTCPeerConnectionIceEvent) => {
-      // setCallHangup(false);
-    });
 
     rtcpHelper.peerConnection.oniceconnectionstatechange = () => {
       const status = rtcpHelper.peerConnection.iceConnectionState;
@@ -47,10 +42,11 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     socket.messageListener<EVENT>(({ answer }: { answer: RTCSessionDescriptionInit }) => {
       rtcpHelper.setDescription(answer);
     }, 'answer');
+
     socket.messageListener<EVENT>((ev: any) => {
       updateStatus({ status: 'START' });
       rtcpHelper.peerConnection.close();
-      console.log(rtcpHelper);
+      window.location.reload();
     }, 'close');
   }, []);
 
@@ -71,6 +67,7 @@ const UserCallWrapper = ({ updateStatus, state }) => {
     updateStatus({ status: 'START' });
     rtcpHelper.peerConnection.close();
     socket.emit<EVENT>('close', id);
+    window.location.reload();
   };
 
   const onModalClose = async (isCancel: boolean = false) => {
@@ -98,4 +95,4 @@ const UserCallWrapper = ({ updateStatus, state }) => {
   );
 };
 
-export default connect(mapStateProps, mapDispatch)(UserCallWrapper);
+export default connect(null, mapDispatch)(UserCallWrapper);
