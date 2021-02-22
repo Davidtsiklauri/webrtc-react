@@ -1,0 +1,11 @@
+FROM node:12.18.3
+
+LABEL version="1.0"
+WORKDIR /app
+
+COPY ["package.json", "package-lock.json", "./"]
+RUN ls
+RUN npm i
+COPY . .
+EXPOSE 5000
+CMD ["node", "backend.js"]

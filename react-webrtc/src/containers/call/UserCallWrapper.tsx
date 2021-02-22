@@ -33,7 +33,6 @@ const UserCallWrapper = ({ updateStatus }) => {
         updateStatus({ status: 'PROGRESS' });
       }
     };
-
     socket.messageListener<EVENT>(async ({ offer }: { offer: RTCSessionDescriptionInit }) => {
       setVisibility(true);
       setOffer(offer);
