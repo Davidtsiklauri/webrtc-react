@@ -2,19 +2,17 @@ version: "3"
 
 services:
   backend:
-    # env_file: "./backend/backend.env"
-    \
-
-\    build:
-      context: ./backend
+    build:
+      context: ./server
       dockerfile: ./Dockerfile
     ports:
       - "5000:5000"
   frontend:
     build:
-      context: ./client
+      context: ./react-webrtc
       dockerfile: ./Dockerfile
     ports:
       - "3000:3000"
-    links:
-      - "backend"
+    stdin_open: true
+  # links:
+  #   - "backend"

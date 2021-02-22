@@ -1,4 +1,4 @@
-FROM node:12.18.3
+FROM node:latest
 
 LABEL version="1.0"
 WORKDIR /app
@@ -8,4 +8,4 @@ RUN ls
 RUN npm i
 COPY . .
 EXPOSE 5000
-CMD ["node", "backend.js"]
+CMD ["node", "server.js"] 
