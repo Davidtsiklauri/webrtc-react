@@ -14,5 +14,5 @@ services:
     ports:
       - "3000:3000"
     stdin_open: true
-  # links:
-  #   - "backend"
+    links:
+      - "backend"
