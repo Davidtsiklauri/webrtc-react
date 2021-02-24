@@ -3,7 +3,7 @@ import { Video } from '../../components/Video';
 import { getUserMedia, RtcpHelper } from '../../helpers/index';
 import { connect } from 'react-redux';
 import { Loader } from '../../components/Loader';
-import { IStatusState } from '../../models/activeUsers.interface';
+import { IStatusState } from '../models/activeUsers.interface';
 import { Svg } from '../../components/Svg';
 
 const videoRef = createRef() as React.RefObject<HTMLVideoElement>,

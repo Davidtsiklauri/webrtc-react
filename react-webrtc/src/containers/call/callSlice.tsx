@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IStatusState } from '../../models/activeUsers.interface';
+import { IStatusState } from '../models/activeUsers.interface';
 
 export const StatusState: IStatusState = {
   status: 'START',

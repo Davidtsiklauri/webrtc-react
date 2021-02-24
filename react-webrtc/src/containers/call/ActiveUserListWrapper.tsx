@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import { Table, Tag, Space, Button } from 'antd';
 import { SocketHelper } from '../../helpers';
-import { TagEnum, IActiveUsers, IStatusState } from '../../models/activeUsers.interface';
+import { TagEnum, IActiveUsers, IStatusState } from '../models/activeUsers.interface';
 import { PersistentStorage } from '../../helpers/persistent.storage';
 import { connect } from 'react-redux';
 import { EVENT } from '../../helpers/socketHelper';
