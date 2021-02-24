@@ -1,10 +1,10 @@
 import React, { createRef, useEffect } from 'react';
-import { Video } from '../../shared/components/Video';
-import { getUserMedia, RtcpHelper } from '../../helper/index';
+import { Video } from '../../components/Video';
+import { getUserMedia, RtcpHelper } from '../../helpers/index';
 import { connect } from 'react-redux';
-import { Loader } from '../../shared/components/Loader';
+import { Loader } from '../../components/Loader';
 import { IStatusState } from '../../models/activeUsers.interface';
-import { Svg } from '../../shared/components/Svg';
+import { Svg } from '../../components/Svg';
 
 const videoRef = createRef() as React.RefObject<HTMLVideoElement>,
   callVideoRef = createRef() as React.RefObject<HTMLVideoElement>,

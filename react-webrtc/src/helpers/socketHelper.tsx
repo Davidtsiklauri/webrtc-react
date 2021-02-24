@@ -5,6 +5,14 @@ export interface IData {
   id: string;
 }
 
+export type EVENT =
+  | 'offer'
+  | 'answer'
+  | 'new_user'
+  | 'active_users'
+  | 'disconnect_user_id'
+  | 'close';
+
 export class SocketHelper {
   private socket: Socket;
 

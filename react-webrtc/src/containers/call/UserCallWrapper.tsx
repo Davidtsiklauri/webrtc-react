@@ -5,12 +5,12 @@ import VideoCallWrapper from './VideoCallWrapper';
 import uuid from 'react-uuid';
 import './video.sass';
 import { CONFIG } from '../../config/config';
-import { RtcpHelper, SocketHelper } from '../../helper';
-import { EVENT } from '../../models/socket.interface';
-import { PersistentStorage } from '../../shared/classes/persistent.storage';
-import { ModalWrapper } from '../../shared/components/Modal';
+import { RtcpHelper, SocketHelper } from '../../helpers';
+import { PersistentStorage } from '../../helpers/persistent.storage';
+import { ModalWrapper } from '../../components/Modal';
 import { updateStatus } from './callSlice';
 import { connect } from 'react-redux';
+import { EVENT } from '../../helpers/socketHelper';
 
 const id = uuid(),
   rtcpHelper = new RtcpHelper(CONFIG),
